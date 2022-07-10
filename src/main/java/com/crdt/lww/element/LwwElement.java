@@ -27,4 +27,9 @@ public abstract class LwwElement<T extends Object> implements ElementInterface<T
     public T getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        return "LwwElement[data=" + getData() + ", time=" + getTimestamp() + "]";
+    }
 }
