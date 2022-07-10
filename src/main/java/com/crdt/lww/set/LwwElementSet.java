@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public abstract class LwwElementSet<T extends LwwElement, T1 extends Object> {
+public abstract class LwwElementSet<T extends LwwElement, T1 extends Object> implements ElementSetInterface<T, T1> {
     private List<T> addList = new ArrayList<>();
     private List<T> removeList = new ArrayList<>();
 
@@ -38,6 +38,49 @@ public abstract class LwwElementSet<T extends LwwElement, T1 extends Object> {
         }
 
         return element.getTimestamp();
+    }
+
+    public boolean exists(T1 value) {
+        T element = createNewElement(value);
+        return exists(element);
+    }
+
+    public boolean exists(T element) {
+        int indexAdd = addList.indexOf(element);
+        int indexRemove = removeList.indexOf(element);
+
+        if(indexAdd == -1) {
+            return false;
+        } else {
+            if(indexRemove == -1) {
+                return true;
+            } else {
+                T a = addList.get(indexAdd);
+                T r = removeList.get(indexRemove);
+
+                return a.getTimestamp() > r.getTimestamp();
+            }
+        }
+    }
+
+    public List<T1> get(){
+        List<T1> result = new ArrayList<>();
+
+        for(T a : addList) {
+            int indexRemove = removeList.indexOf(a);
+
+            if(indexRemove == -1) {
+                result.add((T1) a.getData());
+            } else {
+                T r = removeList.get(indexRemove);
+
+                if(a.getTimestamp() > r.getTimestamp()) {
+                    result.add((T1) a.getData());
+                }
+            }
+        }
+
+        return result;
     }
 
     public int getAddListSize() {
