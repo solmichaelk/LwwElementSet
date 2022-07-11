@@ -40,4 +40,8 @@
 
 **JpaEntityLwwElementSet:** extension of LwwElementSet for JPA entity objects
 
-  
+# Assumption
+When an element is in both add and remove list with exactly same timestamp, this code example assumes such element is considered as removed.
+
+# Unit tests
+Unit tests cover all 4 LWW element set operations (add, remove, exists, get) for both StringLwwElementSet and JpaEntityLwwElementSet
